@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="last_mas" format="color"/>
+    <attr name="time" format="color"/>
+    <attr name="colorDivider" format="color"/>
+    <attr name="colorProgress" format="color"/>
+</resources>

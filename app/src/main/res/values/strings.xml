@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Project1_Ur</string>
+    <string name="app_name">Право ПРО</string>
+    <string name="fragment_start_label">Добро пожаловать</string>
+    <string name="fragment_start_main_text">Это первая в России юридическая база, в которой Вы найдете всю необходимую информацию, сможете воспользоваться интересными сервисами, а также обратиться за помощью к адвокатам и юристам в любом «уголке» нашей страны и за рубежом.</string>
+    <string name="start_name">start_name</string>
+    <string name="data_store_file">attribute_prefs.preferences_pb</string>
+    <string name="option_1">option_1</string>
+    <string name="option_2">option_2</string>
+    <string name="option_3">Изменить тему</string>
+    <string name="name">Имя</string>
+    <string name="pass">Пароль</string>
+    <string name="go">Войти</string>
+    <string name="lose">Пропустить</string>
+    <string name="type_your_message">Введите сообщение</string>
+    <string name="send">Ок</string>
+    <string name="buttonreg">Регистрация</string>
+    <string name="cartInfoSpec">Специализация</string>
+    <string name="cartInfoPhone">Телефон</string>
+    <string name="cartInfoAddress">Адрес</string>
+    <string name="cartInfoDesc">О себе</string>
+    <string name="cartName">Имя</string>
+    <string name="goChat">Начать чат</string>
+    <string name="textStartUr">Юридическая справочная система</string>
+    <string name="cartInfoSfera">Сфера деятельности</string>
+    <string name="content_description_media">avatar</string>
+    <string name="textViewAuth">Войдите</string>
+    <string name="beckAuth">Для доступа к полному функционалу приложения, войдите или выполните сначала Web регистрацию, а потом войдите</string>
 </resources>

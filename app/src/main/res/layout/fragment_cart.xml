@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Media -->
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/content_description_media"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/avatar"
+                android:padding="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView_stars"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:srcCompat="@android:drawable/btn_star_big_on" />
+
+                        <TextView
+                            android:id="@+id/textView_stars"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?android:attr/textColorSecondary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView_edit"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+
+                        <TextView
+                            android:id="@+id/rewView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?android:attr/textColorSecondary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.25"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView_view"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            app:srcCompat="@android:drawable/ic_menu_view" />
+
+                        <TextView
+                            android:id="@+id/viewView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?android:attr/textColorSecondary" />
+                    </LinearLayout>
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/goChat"
+                        style="?attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="0.05"
+                        android:text="@string/goChat" />
+
+
+
+                    <ImageButton
+                        android:id="@+id/overflow_button"
+                        style="?attr/borderlessButtonStyle"
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="0.01"
+                        android:background="?android:selectableItemBackground"
+                        android:src="@drawable/menu"
+                        />
+
+                </LinearLayout>
+
+                <!-- Title, secondary and supporting text -->
+                <TextView
+                    android:id="@+id/cartName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cartName"
+                    android:layout_marginTop="24dp"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    />
+
+                <TextView
+                    android:id="@+id/cartInfoSfera"
+                    style="@style/Primary.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/cartInfoSfera"/>
+
+                <TextView
+                    android:id="@+id/cartSfera"
+                    style="@style/Primary.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/cartInfoSfera"/>
+
+                <TextView
+                    android:id="@+id/cartInfoSpec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    style="@style/Primary.Body2"
+                    android:text="@string/cartInfoSpec"/>
+
+                <TextView
+                    android:id="@+id/cartSpec"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body1"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/cartInfoSpec"/>
+
+                <TextView
+                    android:id="@+id/cartInfoPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body2"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/cartInfoPhone"/>
+
+                <TextView
+                    android:id="@+id/cartPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body1"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/cartInfoPhone"/>
+
+                <TextView
+                    android:id="@+id/cartInfoAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body2"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/cartInfoAddress"/>
+
+                <TextView
+                    android:id="@+id/cartAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body1"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/cartInfoAddress"/>
+
+                <TextView
+                    android:id="@+id/cartInfoDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body2"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/cartInfoDesc"/>
+
+                <TextView
+                    android:id="@+id/cartDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Primary.Body1"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/cartInfoDesc"/>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</ScrollView>
