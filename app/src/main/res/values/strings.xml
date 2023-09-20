@@ -25,4 +25,5 @@
     <string name="content_description_media">avatar</string>
     <string name="textViewAuth">Войдите</string>
     <string name="beckAuth">Для доступа к полному функционалу приложения, войдите или выполните сначала Web регистрацию, а потом войдите</string>
+    <string name="chatWhith">Чат с %1$s</string>
 </resources>

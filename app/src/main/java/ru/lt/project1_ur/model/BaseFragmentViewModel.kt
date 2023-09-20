@@ -8,10 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import ru.lt.project1_ur.R
 import ru.lt.project1_ur.data.DataStoreHelper
 import ru.lt.project1_ur.data.ProjectData
 import ru.lt.project1_ur.data.RetainedProjectData
+import ru.lt.project1_ur.state.NavigatorIntent.To
+import ru.lt.project1_ur.state.NavigatorIntent
+import ru.lt.project1_ur.state.ProjectBaseIntent
+import ru.lt.project1_ur.state.ProjectBaseIntent.*
 import ru.lt.project1_ur.state.ProjectViewState
 import javax.inject.Inject
 
@@ -23,58 +30,71 @@ open class BaseFragmentViewModel  @Inject constructor(
 ) : ViewModel() {
 
     val viewState: MutableLiveData<ProjectViewState.BaseState> = MutableLiveData()
-    val navigateToChatFragment: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    private val _navigateChannel = Channel<NavigatorIntent>()
+    val navigateFlow: Flow<NavigatorIntent> = _navigateChannel.receiveAsFlow()
 
 
     init {
-        viewState.value = data.data.renderBaseInput()
+        processIntents(LoadInitialData,true)
+    }
+    fun processIntents(intents: ProjectBaseIntent, update: Boolean = false, isSwitchTheme: Boolean = false) {
+        data.data = data.data.processBaseChange(intents)
+        if (update)
+            viewState.value = data.data.renderBaseInput(isSwitchTheme)
     }
 
     private fun switchTheme() {
-
         val preferences = context.getSharedPreferences("settings", MODE_PRIVATE)
-        val theme = preferences.getString("theme", "auto")
+        val theme = preferences.getString("theme", "light")
         val editor = preferences.edit()
         editor.putString("theme", if(theme == "light") "dark" else "light")
         editor.apply()
-        data.data = data.data.switchTheme(theme == "dark")
-        viewState.value = data.data.renderBaseInput(true)
+        processIntents(SwitchTheme(theme == "dark"), update = true, isSwitchTheme = true)
     }
 
-    fun isSwitchThemeOff() {
-        viewState.value = viewState.value!!.copy(isSwitchTheme = false)
+    private fun ProjectData.processBaseChange(event: ProjectBaseIntent): ProjectData = when (event) {
+        LoadInitialData -> copy()
+        SwitchThemeOff -> copy()
+        Logout -> copy(name = null, auth = false)
+        is MenuItemClick -> handleCommonMenuItemClick(event.menuItem, auth)
+        NavigateTo -> navigateTo()
+        is SwitchTheme -> copy(isDarkTheme = event.isDarkTheme)
     }
 
-    open fun handleCommonMenuItemClick(menuItem: MenuItem): Boolean {
-        return when (menuItem.itemId) {
-            R.id.option_1 -> {
-                if (!data.data.auth) {
-                    navigateToChatFragment.value = true
-                }
-                true
-            }
-            R.id.option_2 -> {
-                data.data = data.data.logout()
-                dataStoreHelper.saveData(viewModelScope, R.string.start_name, "")
-                viewState.value = data.data.renderBaseInput()
-                true
-            }
-            R.id.option_3 -> {
-                switchTheme()
-                true
-            }
-            else -> false
-        }
-    }
-
-    private fun ProjectData.logout(): ProjectData = copy(name = null, auth = false)
-    private fun ProjectData.switchTheme(isDarkTheme: Boolean): ProjectData = copy(isDarkTheme = isDarkTheme)
-
-    private fun ProjectData.renderBaseInput(isSwitchTheme: Boolean = false): ProjectViewState.BaseState = ProjectViewState.BaseState(
+    private fun ProjectData.renderBaseInput(isSwitchTheme: Boolean): ProjectViewState.BaseState = ProjectViewState.BaseState(
         menu1 = if (auth) name!! else "Войти",
         menu2 = if (auth) "Выйти" else "",
         menu2IsVisible = auth,
         isDarkTheme = isDarkTheme,
         isSwitchTheme = isSwitchTheme,
     )
+
+    private fun handleCommonMenuItemClick(menuItem: MenuItem, auth: Boolean): ProjectData {
+        when (menuItem.itemId) {
+            R.id.option_1 -> {
+                if (!auth) {
+                    processIntents(NavigateTo)
+                }
+            }
+            R.id.option_2 -> {
+                dataStoreHelper.saveData(viewModelScope, R.string.start_name, "")
+                processIntents(Logout,true)
+            }
+            R.id.option_3 -> {
+                switchTheme()
+            }
+        }
+        return data.data.copy()
+    }
+
+    private fun navigateTo(): ProjectData{
+        _navigateChannel.trySend(To)
+        return data.data.copy()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _navigateChannel.close()
+    }
 }

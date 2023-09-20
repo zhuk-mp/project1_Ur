@@ -5,11 +5,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.lt.project1_ur.R
 import ru.lt.project1_ur.model.BaseFragmentViewModel
+import ru.lt.project1_ur.state.NavigatorIntent.To
+import ru.lt.project1_ur.state.ProjectBaseIntent.SwitchThemeOff
+import ru.lt.project1_ur.state.ProjectBaseIntent.MenuItemClick
 
 @AndroidEntryPoint
 open class BaseFragment(fragmentStart: Int) : Fragment(fragmentStart) {
@@ -24,17 +31,21 @@ open class BaseFragment(fragmentStart: Int) : Fragment(fragmentStart) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.navigateToChatFragment.observe(viewLifecycleOwner) { shouldNavigate ->
-            if (shouldNavigate) {
-                findNavController().navigate(actionToLoginFragment)
-                viewModel.navigateToChatFragment.value = false
-            }
-        }
 
         viewModel.viewState.observe(viewLifecycleOwner) {
             if (it.isSwitchTheme) {
                 requireActivity().recreate()
-                viewModel.isSwitchThemeOff()
+                viewModel.processIntents(SwitchThemeOff,true)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateFlow.collect { destination ->
+                    when (destination) {
+                        To -> findNavController().navigate(actionToLoginFragment)
+                        else -> {}
+                    }
+                }
             }
         }
     }
@@ -44,8 +55,6 @@ open class BaseFragment(fragmentStart: Int) : Fragment(fragmentStart) {
         val popupMenu = PopupMenu(context, view)
         popupMenu.inflate(R.menu.common_menu)
 
-
-
         val menuItem1 = popupMenu.menu.findItem(R.id.option_1)
         val menuItem2 = popupMenu.menu.findItem(R.id.option_2)
 
@@ -54,7 +63,8 @@ open class BaseFragment(fragmentStart: Int) : Fragment(fragmentStart) {
         menuItem2.isVisible = viewModel.viewState.value!!.menu2IsVisible
 
         popupMenu.setOnMenuItemClickListener { menuItem ->
-            viewModel.handleCommonMenuItemClick(menuItem)
+            viewModel.processIntents(MenuItemClick(menuItem),true)
+            true
         }
         popupMenu.show()
     }

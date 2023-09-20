@@ -1,18 +1,26 @@
 package ru.lt.project1_ur.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
+import kotlinx.coroutines.launch
 import ru.lt.project1_ur.R
 import ru.lt.project1_ur.databinding.FragmentCartBinding
 import ru.lt.project1_ur.model.CartFragmentViewModel
+import ru.lt.project1_ur.state.NavigatorIntent
+import ru.lt.project1_ur.state.ProjectCartIntent.NavigateTo
 
 @AndroidEntryPoint
 class CartFragment : BaseFragment(R.layout.fragment_cart){
@@ -56,10 +64,21 @@ class CartFragment : BaseFragment(R.layout.fragment_cart){
                 binding.cartDesc.visibility = View.GONE
                 binding.cartInfoDesc.visibility = View.GONE
             }
+            if (!it.phone.isNullOrEmpty()) {
+                binding.cartPhone.text = it.phone
+                binding.cartPhone.setOnClickListener {
+                    val phoneNumber = Uri.parse("tel:" + binding.cartPhone.text)
+                    val intent = Intent(Intent.ACTION_DIAL, phoneNumber)
+                    startActivity(intent)
+                }
+            }
+            else{
+                binding.cartPhone.visibility = View.GONE
+                binding.cartInfoPhone.visibility = View.GONE
+            }
 
             binding.cartName.text = it.name
 
-            binding.cartPhone.text = it.phone
             binding.viewView.text = it.count.toString()
             binding.rewView.text = it.stars.toString()
 
@@ -79,14 +98,19 @@ class CartFragment : BaseFragment(R.layout.fragment_cart){
         }
 
         binding.goChat.setOnClickListener {
-            viewModel.update()
-            findNavController().navigate(
-                if (viewModel.viewState.value!!.auth) R.id.action_cartFragment_to_chatFragment
-                else {
-                    viewModel.beckAuth()
-                    R.id.action_cartFragment_to_loginFragment
+            viewModel.processIntents(NavigateTo)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateFlow.collect { destination ->
+                    when (destination) {
+                        NavigatorIntent.ToChat -> findNavController().navigate(R.id.action_cartFragment_to_chatFragment)
+                        NavigatorIntent.ToLogin -> findNavController().navigate(R.id.action_cartFragment_to_loginFragment)
+                        else -> {}
+                    }
                 }
-            )
+            }
         }
 
         binding.overflowButton.setOnClickListener {

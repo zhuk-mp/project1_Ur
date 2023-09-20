@@ -6,9 +6,9 @@ sealed class ProjectViewState {
         val auth: Boolean = false,
     )
     data class CatalogState(
-        val navi: Boolean,
         val itemId: Int?,
         val type: String?,
+        val catalogList: List<Catalog>,
         val auth: Boolean
     )
 
@@ -18,17 +18,21 @@ sealed class ProjectViewState {
         val sfera: String,
     )
     data class PersonState(
-        val navi: Boolean,
         val itemId: Int?,
         val itemName: String?,
         val type: String?,
-        val auth: Boolean
+        val auth: Boolean,
+        val personList: List<Person>,
+        val typeId: Int,
+        val countPage: Int
     )
+
     data class LoginState(
         val beckAuth: Boolean
     )
     data class ChatState(
         val itemName: String?,
+        val messageList: List<Message>,
         val type: String?
     )
 

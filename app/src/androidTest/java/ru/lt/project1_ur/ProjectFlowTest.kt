@@ -65,6 +65,7 @@ class ProjectFlowTest {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<ViewHolder>(0, click())
             )
+        onView(withId(R.id.goChat)).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.editTextTextIn)).perform(typeText(name))
         onView(withId(R.id.editTextTextPasswordIn)).perform(typeText(password))

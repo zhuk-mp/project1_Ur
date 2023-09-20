@@ -1,5 +1,7 @@
 package ru.lt.project1_ur.data
 
+import ru.lt.project1_ur.state.ProjectViewState
+
 data class ProjectData(
     val name: String? = null,
     val isDarkTheme: Boolean = true,
@@ -17,5 +19,8 @@ data class ProjectData(
     val itemAddressFull: String? = null,
     val itemView: Int? = null,
     val itemRew: Int? = null,
+    val personList: List<ProjectViewState.Person> = emptyList(),
+    val catalogList: List<ProjectViewState.Catalog> = emptyList(),
+    val messageList: MutableList<ProjectViewState.Message> = mutableListOf(),
 
     )

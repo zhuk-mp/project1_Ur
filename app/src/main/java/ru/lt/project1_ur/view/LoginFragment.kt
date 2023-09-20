@@ -7,11 +7,19 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.lt.project1_ur.R
 import ru.lt.project1_ur.databinding.FragmentLoginBinding
 import ru.lt.project1_ur.model.LoginFragmentViewModel
+import ru.lt.project1_ur.state.NavigatorIntent.ToWeb
+import ru.lt.project1_ur.state.NavigatorIntent.ToCatalog
+import ru.lt.project1_ur.state.ProjectLoginIntent.LoginEntered
+import ru.lt.project1_ur.state.ProjectLoginIntent.NavigateTo
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_start){
@@ -35,20 +43,18 @@ class LoginFragment : Fragment(R.layout.fragment_start){
             }
         }
 
-
-
         val name = binding.editTextText
         val pass = binding.editTextTextPassword
 
         binding.button.setOnClickListener {
             if (name.editText!!.text.toString().isNotEmpty() && pass.editText!!.text.toString().length > 5) {
-                viewModel.onLoginEntered(
+                viewModel.processIntents(
+                    LoginEntered(
                     R.string.start_name,
                     name.editText!!.text.toString(),
                     pass.editText!!.text.toString()
-                )
-                viewModel.beckAuth()
-                findNavController().navigate(R.id.action_loginFragment_to_catalogFragment)
+                ))
+                viewModel.processIntents(NavigateTo(ToCatalog))
             }
             name.error = if (name.editText!!.text.toString().isNotEmpty()) null else "Обязательно к заполнению"
             pass.error = if (pass.editText!!.text.toString().isNotEmpty() && pass.editText!!.text.toString().length > 5) null else
@@ -67,15 +73,24 @@ class LoginFragment : Fragment(R.layout.fragment_start){
         }
 
         binding.buttonLose.setOnClickListener {
-            viewModel.beckAuth()
-            findNavController().navigate(R.id.action_loginFragment_to_catalogFragment)
+            viewModel.processIntents(NavigateTo(ToCatalog))
 
         }
 
         binding.buttonReg.setOnClickListener {
-            viewModel.beckAuth()
-            findNavController().navigate(R.id.action_loginFragment_to_webViewFragment)
+            viewModel.processIntents(NavigateTo(ToWeb))
 
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateFlow.collect { destination ->
+                    when (destination) {
+                        ToCatalog -> findNavController().navigate(R.id.action_loginFragment_to_catalogFragment)
+                        ToWeb -> findNavController().navigate(R.id.action_loginFragment_to_webViewFragment)
+                        else -> {}
+                    }
+                }
+            }
         }
 
     }
